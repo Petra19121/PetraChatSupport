@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Petra Chatbot</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #e6ecf0;
+      margin: 0;
+      padding: 20px;
+    }
+
+    #chatbox {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      height: 90vh;
+    }
+
+    #messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .message {
+      display: flex;
+      margin-bottom: 15px;
+      align-items: flex-end;
+    }
+
+    .bot {
+      flex-direction: row;
+    }
+
+    .user {
+      flex-direction: row-reverse;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-size: cover;
+      margin: 0 10px;
+    }
+
+    .bubble {
+      max-width: 70%;
+      padding: 10px 15px;
+      border-radius: 20px;
+      line-height: 1.4;
+      font-size: 14px;
+    }
+
+    .bot .bubble {
+      background-color: #f1f0f0;
+      color: #333;
+      border-top-left-radius: 0;
+    }
+
+    .user .bubble {
+      background-color: #0078ff;
+      color: white;
+      border-top-right-radius: 0;
+    }
+
+    #inputSection {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 20px;
+      border-top: 1px solid #ddd;
+      background: #fafafa;
+    }
+
+    select, button {
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 20px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: #0078ff;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #005fcc;
+    }
+  </style>
+</head>
+<body>
+
+<div id="chatbox">
+  <div id="messages"></div>
+
+  <div id="inputSection">
+    <select id="questionDropdown">
+      <option value="" disabled selected>Select a question...</option>
+      <option value="PAN Card bawlna dia bang bang poimoh?">PAN Card bawlna dia bang bang poimoh?</option>
+      <option value="Voter Id Card bawlna dia bang bang poimoh?">Voter Id Card bawlna dia bang bang poimoh?</option>
+      <option value="Tribe Certificate bawlna bang bang poimoh?">Tribe Certificate bawlna bang bang poimoh?</option>
+      <option value="Domicile Certificate bawlna bang bang poimoh?">Domicile Certificate bawlna bang bang poimoh?</option>
+      <option value="Income Certificate bawlna bang bang poimoh?">Income Certificate bawlna bang bang poimoh?</option>
+      <option value="SSC a ki register na dia bang bang poimoh?">SSC a ki register na dia bang bang poimoh?</option>
+      <option value="Airtel Payments Bank honna dia bang bang poimoh?">Airtel Payments Bank honna dia bang bang poimoh?</option>
+      <option value="Birth Certificate bawlna dia bang bang poimoh?">Birth Certificate bawlna dia bang bang poimoh?</option>
+      <option value="AIRTEL SIM lakna dia bang bang poimoh?">AIRTEL SIM lakna dia bang bang poimoh?</option>
+      <option value="SPARSH Life Certificate balwna dia bang bang poimoh?">SPARSH Life Certificate balwna dia bang bang poimoh?</option>
+   <option value="Udyam Certificate bawlna dia bang bang poimoh?">Udyam Certificate bawlna dia bang bang poimoh?</option>
+    </select>
+    <button onclick="askQuestion()">Ask</button>
+    <button onclick="resetChat()">Reset</button>
+  </div>
+</div>
+
+<script>
+  const qaList = {
+    "PAN Card bawlna dia bang bang poimoh?": "PAN CARD bawlna dia poimohte ahih leh hiaite ahi - Aadhaar Card, Passport Photo, Phone No., Email",
+    "Voter Id Card bawlna dia bang bang poimoh?": "Voter Id Card bawlna dia poimohte ahihleh - Aadhaar Card color front leh back, Passport photo (kilak tawm ahoih), Voter Id niesa innkuante a leh VA Residence Proof",
+    "Tribe Certificate bawlna bang bang poimoh?": "Tribe Certificate bawlna dia poimohte ahih leh - Aadhaar Card color, VA Residential Certificate, Passport Photo, Voter Id Card applicant a poimoh ding. Applicant in Voter Id card aneih kei leh Nu hiam Pa hiam Voter ngai teitei ding hi. Nu leh Pa min leh Tribe min poimoh ding hi.",
+    "Domicile Certificate bawlna bang bang poimoh?": "Domicile Certificate bawlna dia poimohte ahihleh - Aadhaar Card color, VA Residential Certificate, Passport Photo, Voter Id Card applicant a poimoh ding. Applicant in Voter Id card aneih kei leh Nu hiam Pa hiam Voter ngai teitei ding hi.",
+    "Income Certificate bawlna bang bang poimoh?": "Income Certificate bawlna dia poimohte ahih leh - Income neitu or Applicant Aadhaar card, Passport Photo, Voter Id Card, VA Residential Certificate leh Income Amount ding?",
+    "SSC a ki register na dia bang bang poimoh?": "SSC a ki register na dia poimohte ahihleh - Phone No. Aadhaar Card leh Aadhaar linked Phone No.. Signature, Class X apan atunglam Certificatete poimoh ding hi. Candidate pen Petra Office ah ahong pai ngai teitei ding hi. Live ah lim kilak ngai ban ah Aadhaar Face Authentication leng bawl ngai hi",
+    "Birth Certificate bawlna dia bang bang poimoh?": "Birth Certificate bawlna dia poimohte ahihleh - Applicant Min, DoB, Gender, Address, Nu leh Pa Aaadhaar Card leng alou theilou ahi.",
+    "AIRTEL SIM lakna dia bang bang poimoh?": "AIRTEL SIM lakna dia poimohte ahih leh SIM Card neitu ding Aadhaar Card leh ami mahmah Petra Office ah hong pai ngai ding ahi",
+    "SPARSH Life Certificate balwna dia bang bang poimoh?": "SPARSH Life Certificate balwna dia poimohte ahihleh - PPO No. leh PPO toh kilink Phone No. Pensioner leng omngai ding - Khutpi mek ngai ahihziak in",
+    "Airtel Payments Bank honna dia bang bang poimoh?": "Airtel Payments Bank honna dia poimohte ahihleh -  Aadhaar Card, Aadhaar linked Phone No., PAN Card leh Ami mahmah om ngai ding hi. Nominee ding khat Innkuan Aaadhar leng poimoh ding hi",
+   "Udyam Certificate bawlna dia bang bang poimoh?": "Udyam Certificate bawlna dia poimohte ahihleh - Aadhaar Card, Aadhar Linked Phone No., Bank Account No, Bank IFSC code, Trade License omleh hoihsem(poimoh tuh hilou)",
+  };
+
+  const userAvatar = "https://lh6.googleusercontent.com/3W4bRq-JndlDDW_GlbW6zUSeSgBBtkbfeHcvHbHaAtMyiM3zi_hPHgE9i0qZASFKibICc2mZiobOi02NBFDsyLJgCKswkftegY0udRdzo-ZHGjkGZRXOaLpPKhtNmpa5CTqRxJwf-sJ9-OgKxR9oTOwaxeUDdL_fVJUqy1lCpJO4DniGYpsswQ=w1280";
+  const botAvatar = "https://lh3.googleusercontent.com/p/AF1QipPFc_02zzkNFnmKBh5gvtZHm71Li3r7fTg6KDZG=s1360-w1360-h1020-rw";
+
+  function askQuestion() {
+    const dropdown = document.getElementById("questionDropdown");
+    const question = dropdown.value;
+    if (!question) return;
+
+    displayMessage(question, 'user');
+    const reply = qaList[question] || "Hmm, I don't know how to answer that.";
+    setTimeout(() => displayMessage(reply, 'bot'), 600);
+
+    dropdown.selectedIndex = 0; // reset dropdown
+  }
+
+  function displayMessage(text, sender) {
+    const messages = document.getElementById('messages');
+
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}`;
+
+    const avatarDiv = document.createElement('div');
+    avatarDiv.className = 'avatar';
+    avatarDiv.style.backgroundImage = `url(${sender === 'user' ? userAvatar : botAvatar})`;
+
+    const bubbleDiv = document.createElement('div');
+    bubbleDiv.className = 'bubble';
+    bubbleDiv.textContent = text;
+
+    messageDiv.appendChild(avatarDiv);
+    messageDiv.appendChild(bubbleDiv);
+    messages.appendChild(messageDiv);
+    messageDiv.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function resetChat() {
+    document.getElementById('messages').innerHTML = '';
+    document.getElementById('questionDropdown').selectedIndex = 0;
+  }
+</script>
+
+</body>
+</html>
