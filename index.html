@@ -1,184 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Petra Chatbot</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Predefined Chatbot</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #e6ecf0;
-      margin: 0;
+      font-family: Arial, sans-serif;
       padding: 20px;
+      background-color: #121212;
+      color: #e0e0e0;
     }
-
-    #chatbox {
-      max-width: 500px;
-      margin: auto;
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    .chatbox {
       display: flex;
       flex-direction: column;
-      height: 90vh;
+      align-items: center;
+      border: 1px solid #333;
+      background-color: #1e1e1e;
+      padding: 15px;
+      max-width: 1000px;
+      margin: auto;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
     }
-
-    #messages {
-      flex: 1;
-      padding: 20px;
+    .chat-history {
+      order: -1;
+      margin-bottom: 20px;
+      max-height: 400px;
       overflow-y: auto;
+      width: 100%;
+      text-align: center;
     }
-
-    .message {
+    .bubble {
+      max-width: 75%;
+      padding: 10px 14px;
+      margin: 8px auto;
+      border-radius: 16px;
+      position: relative;
       display: flex;
-      margin-bottom: 15px;
       align-items: flex-end;
+      text-align: left;
     }
-
-    .bot {
-      flex-direction: row;
-    }
-
     .user {
+      background-color: #2e7d32;
       flex-direction: row-reverse;
     }
-
+    .bot {
+      background-color: #333;
+    }
     .avatar {
-      width: 40px;
-      height: 40px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      background-size: cover;
-      margin: 0 10px;
+      margin: 0 8px;
     }
-
-    .bubble {
-      max-width: 70%;
-      padding: 10px 15px;
-      border-radius: 20px;
-      line-height: 1.4;
-      font-size: 14px;
+    .timestamp {
+      font-size: 0.75em;
+      color: #aaa;
+      margin-top: 4px;
     }
-
-    .bot .bubble {
-      background-color: #f1f0f0;
-      color: #333;
-      border-top-left-radius: 0;
+    .typing {
+      font-style: italic;
+      color: #bbb;
     }
-
-    .user .bubble {
-      background-color: #0078ff;
-      color: white;
-      border-top-right-radius: 0;
+    .options-wrapper {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+      width: 100%;
     }
-
-    #inputSection {
-      display: flex;
-      flex-direction: column;
-      padding: 10px 20px;
-      border-top: 1px solid #ddd;
-      background: #fafafa;
-    }
-
-    select, button {
-      padding: 10px;
-      font-size: 14px;
-      border-radius: 20px;
-      margin: 5px 0;
-      border: 1px solid #ccc;
-    }
-
-    button {
-      background: #0078ff;
-      color: white;
+    button.option-button {
+      padding: 6px 10px;
+      font-size: 0.9em;
       border: none;
-      font-weight: bold;
+      border-radius: 20px;
+      background-color: #1976d2;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      text-align: left;
+    }
+    button.option-button:hover {
+      background-color: #1565c0;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .top-bar button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      background-color: #424242;
+      color: #fff;
       cursor: pointer;
     }
-
-    button:hover {
-      background: #005fcc;
+    @media (max-width: 600px) {
+      .options-wrapper {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-
-<div id="chatbox">
-  <div id="messages"></div>
-
-  <div id="inputSection">
-    <select id="questionDropdown">
-      <option value="" disabled selected>Select a question...</option>
-      <option value="PAN Card bawlna dia bang bang poimoh?">PAN Card bawlna dia bang bang poimoh?</option>
-      <option value="Voter Id Card bawlna dia bang bang poimoh?">Voter Id Card bawlna dia bang bang poimoh?</option>
-      <option value="Tribe Certificate bawlna bang bang poimoh?">Tribe Certificate bawlna bang bang poimoh?</option>
-      <option value="Domicile Certificate bawlna bang bang poimoh?">Domicile Certificate bawlna bang bang poimoh?</option>
-      <option value="Income Certificate bawlna bang bang poimoh?">Income Certificate bawlna bang bang poimoh?</option>
-      <option value="SSC a ki register na dia bang bang poimoh?">SSC a ki register na dia bang bang poimoh?</option>
-      <option value="Airtel Payments Bank honna dia bang bang poimoh?">Airtel Payments Bank honna dia bang bang poimoh?</option>
-      <option value="Birth Certificate bawlna dia bang bang poimoh?">Birth Certificate bawlna dia bang bang poimoh?</option>
-      <option value="AIRTEL SIM lakna dia bang bang poimoh?">AIRTEL SIM lakna dia bang bang poimoh?</option>
-      <option value="SPARSH Life Certificate balwna dia bang bang poimoh?">SPARSH Life Certificate balwna dia bang bang poimoh?</option>
-   <option value="Udyam Certificate bawlna dia bang bang poimoh?">Udyam Certificate bawlna dia bang bang poimoh?</option>
-    </select>
-    <button onclick="askQuestion()">Ask</button>
-    <button onclick="resetChat()">Reset</button>
+  <div class="chatbox">
+    <div class="top-bar">
+      <button onclick="printChat()">Print Chat</button>
+      <button onclick="downloadChat()">Download Chat</button>
+      <button onclick="clearChat()">Clear Chat</button>
+    </div>
+    <div class="chat-history" id="chatHistory"></div>
+    <h3>Petra Chat Support</h3>
+    <div class="options-wrapper" id="options"></div>
   </div>
-</div>
 
-<script>
-  const qaList = {
-    "PAN Card bawlna dia bang bang poimoh?": "PAN CARD bawlna dia poimohte ahih leh hiaite ahi - Aadhaar Card, Passport Photo, Phone No., Email",
-    "Voter Id Card bawlna dia bang bang poimoh?": "Voter Id Card bawlna dia poimohte ahihleh - Aadhaar Card color front leh back, Passport photo (kilak tawm ahoih), Voter Id neisa innkuante a leh VA Residence Proof",
-    "Tribe Certificate bawlna bang bang poimoh?": "Tribe Certificate bawlna dia poimohte ahih leh - Aadhaar Card color, VA Residential Certificate, Passport Photo, Voter Id Card applicant a poimoh ding. Applicant in Voter Id card aneih kei leh Nu hiam, Pa hiam, Voter ngai teitei ding hi. Nu leh Pa min leh Tribe min poimoh ding hi.",
-    "Domicile Certificate bawlna bang bang poimoh?": "Domicile Certificate bawlna dia poimohte ahihleh - Aadhaar Card color, VA Residential Certificate, Passport Photo, Voter Id Card applicant a poimoh ding. Applicant in Voter Id card aneih kei leh Nu hiam Pa hiam Voter ngai teitei ding hi.",
-    "Income Certificate bawlna bang bang poimoh?": "Income Certificate bawlna dia poimohte ahih leh - Income neitu or Applicant Aadhaar card, Passport Photo, Voter Id Card, VA Residential Certificate leh Income Amount ding?",
-    "SSC a ki register na dia bang bang poimoh?": "SSC a ki register na dia poimohte ahihleh - Phone No. Aadhaar Card leh Aadhaar linked Phone No.. Signature, Class X apan atunglam Certificatete poimoh ding hi. Candidate pen Petra Office ah ahong pai ngai teitei ding hi. Live ah lim kilak ngai ban ah Aadhaar Face Authentication leng bawl ngai hi",
-    "Birth Certificate bawlna dia bang bang poimoh?": "Birth Certificate bawlna dia poimohte ahihleh - Applicant Min, DoB, Gender, Address, Nu leh Pa Aaadhaar Card leng alou theilou ahi.",
-    "AIRTEL SIM lakna dia bang bang poimoh?": "AIRTEL SIM lakna dia poimohte ahih leh SIM Card neitu ding Aadhaar Card leh ami mahmah Petra Office ah hong pai ngai ding ahi",
-    "SPARSH Life Certificate balwna dia bang bang poimoh?": "SPARSH Life Certificate balwna dia poimohte ahihleh - PPO No. leh PPO toh kilink Phone No. Pensioner leng omngai ding - Khutpi mek ngai ahihziak in",
-    "Airtel Payments Bank honna dia bang bang poimoh?": "Airtel Payments Bank honna dia poimohte ahihleh -  Aadhaar Card, Aadhaar linked Phone No., PAN Card leh Ami mahmah om ngai ding hi. Nominee ding khat Innkuan Aaadhar leng poimoh ding hi",
-   "Udyam Certificate bawlna dia bang bang poimoh?": "Udyam Certificate bawlna dia poimohte ahihleh - Aadhaar Card, Aadhar Linked Phone No., Bank Account No, Bank IFSC code, Trade License omleh hoihsem(poimoh tuh hilou)",
-  };
+  <audio id="sendSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+  <audio id="receiveSound" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg"></audio>
 
-  const userAvatar = "https://lh6.googleusercontent.com/3W4bRq-JndlDDW_GlbW6zUSeSgBBtkbfeHcvHbHaAtMyiM3zi_hPHgE9i0qZASFKibICc2mZiobOi02NBFDsyLJgCKswkftegY0udRdzo-ZHGjkGZRXOaLpPKhtNmpa5CTqRxJwf-sJ9-OgKxR9oTOwaxeUDdL_fVJUqy1lCpJO4DniGYpsswQ=w1280";
-  const botAvatar = "https://lh3.googleusercontent.com/p/AF1QipPFc_02zzkNFnmKBh5gvtZHm71Li3r7fTg6KDZG=s1360-w1360-h1020-rw";
+  <script>
+    const options = {
+      "PAN Card bawlna dia bang bang poimoh?": "PAN CARD bawlna dia poimohte ahih leh hiaite ahi - Aadhaar Card, Passport Photo, Signature, Phone No. leh Email.",
+      "Voter Id Card bawlna dia bang bang poimoh?": "Voter Id Card bawlna dia poimohte ahihleh - Aadhaar Card color front leh back, Passport photo (kilak tawm ahoih), Voter Id neisa innkuante a leh VA Residence Proof.",
+      "Indian Passport bawlna dia bang bang poimoh?": "Indian Passport balwna dia poimohte ahihleh - Aadhaar Card(Phone No. toh kilink), PAN Card, Digital Birth Certificate, Voter Id Card, Class X Certificate, Tribe Certificate, Domicile Certificate chihte ahi.",
+      "Tribe Certificate bawlna bang bang poimoh?": "Tribe Certificate bawlna dia poimohte ahih leh - Aadhaar Card color, VA Residential Certificate, Passport Photo, Voter Id Card applicant a poimoh ding.",
+      "Domicile Certificate bawlna bang bang poimoh?": "Domicile Certificate bawlna dia poimohte ahihleh - Aadhaar Card color, VA Residential Certificate, Passport Photo, Voter Id Card applicant a poimoh ding.",
+      "Income Certificate bawlna bang bang poimoh?": "Income Certificate bawlna dia poimohte ahih leh - Income neitu or Applicant Aadhaar card, Passport Photo, Voter Id Card, VA Residential Certificate leh Income Amount gelh ding zah poimoh.",
+      "Birth Certificate bawlna dia bang bang poimoh?": "Birth Certificate bawlna dia poimohte ahihleh - Applicant Min, DoB, Gender, Address, Nu leh Pa Aaadhaar Card leng alou theilou ahi.",
+      "AIRTEL SIM lakna dia bang bang poimoh?": "AIRTEL SIM lakna dia poimohte ahih leh SIM Card neitu ding Aadhaar Card leh ami mahmah Petra Office ah hong pai ngai ding ahi",
+      "Airtel Payments Bank honna dia bang bang poimoh?": "Airtel Payments Bank honna dia poimohte ahihleh -  Aadhaar Card, Aadhaar linked Phone No., PAN Card leh Ami mahmah om ngai ding hi.",
+      "SPARSH Life Certificate balwna dia bang bang poimoh?": "SPARSH Life Certificate balwna dia poimohte ahihleh - PPO No. leh PPO toh kilink Phone No. Pensioner leng omngai ding - Khutpi mek ngai ahihziak in.",
+      "Udyam Certificate bawlna dia bang bang poimoh?": "Udyam Certificate bawlna dia poimohte ahihleh - Aadhaar Card, Aadhar Linked Phone No., Bank Account No, Bank IFSC code, Trade License omleh hoihsem(poimoh tuh hilou).",
+      "SSC a ki register na dia bang bang poimoh?": "SSC a ki register na dia poimohte ahihleh - Phone No. Aadhaar Card leh Aadhaar linked Phone No., Signature, Class X apan atunglam Certificatete poimoh ding hi.",
+      "Motor Insurance bawlna dia bang bang poimoh?": "Motor Insurance balwna dia poimohte ahih leh - Motor RC, PAN Card or Aadhaar Card, Phone No., Email, Nominee ding khat, Insruance lui pen poimoh hi.",
+      "Lenna Ticket Book na dia bang bang poimoh?": "Lenna Ticket Book na dia poimohte ahih leh - Aadhaar Card, Zindi ni, Phone No., Email, Kipantna di mun leh Zinna di mun.",
+      "CIBIL Score kaih khiakna dia bang bang poimoh?": "CIBIL Score kaih khiakna dia poimohte ahih leh - Mobile No. linked to Aadhaar.",
+      "Bank Statement kaih khiakna dia bang bang poimoh?": "Bank Statement kaih khikana dia poimohte ahih leh -  Bank min, Bank toh kilink Mobile No. , PAN Card ahi.",
+      "NCPI Aadhaar leh Bank Seeding bawlna dia bang bang poimoh?": "NCPI Aadhaar leh Bank Seeding bawlna dia poimohte ahih leh - Bank Min, Bank Account No., Aadhaar No., leh Aadhar Linked Mobile No. te poimoh ding.",
+      "Tribal Scholarship Apply nadia bang bang poimoh?": "Tribal Scholarship Apply nadia poimohte ahih leh - OTR leh Password. OTR bawl nailouh ahih leh Aadhaar No., Aadhaar Linked Mobile No. Class apass sa Certificate/Marksheet te, Tribe Certificate, Income Certificate."
+    };
 
-  function askQuestion() {
-    const dropdown = document.getElementById("questionDropdown");
-    const question = dropdown.value;
-    if (!question) return;
+    const optionsContainer = document.getElementById('options');
+    const chatHistory = document.getElementById('chatHistory');
+    const sendSound = document.getElementById('sendSound');
+    const receiveSound = document.getElementById('receiveSound');
 
-    displayMessage(question, 'user');
-    const reply = qaList[question] || "Hmm, I don't know how to answer that.";
-    setTimeout(() => displayMessage(reply, 'bot'), 600);
+    function getTime() {
+      const now = new Date();
+      return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
 
-    dropdown.selectedIndex = 0; // reset dropdown
-  }
+    function addMessage(text, className) {
+      const bubble = document.createElement('div');
+      bubble.className = `bubble ${className}`;
+      const avatar = document.createElement('img');
+      avatar.src = 'https://lh3.googleusercontent.com/p/AF1QipPFc_02zzkNFnmKBh5gvtZHm71Li3r7fTg6KDZG=s1360-w1360-h1020-rw';
+      avatar.className = 'avatar';
 
-  function displayMessage(text, sender) {
-    const messages = document.getElementById('messages');
+      const message = document.createElement('div');
+      message.innerHTML = `${text}<div class="timestamp">${getTime()}</div>`;
 
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${sender}`;
+      bubble.appendChild(avatar);
+      bubble.appendChild(message);
+      chatHistory.appendChild(bubble);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
 
-    const avatarDiv = document.createElement('div');
-    avatarDiv.className = 'avatar';
-    avatarDiv.style.backgroundImage = `url(${sender === 'user' ? userAvatar : botAvatar})`;
+      if (className === 'user') sendSound.play();
+      else receiveSound.play();
+    }
 
-    const bubbleDiv = document.createElement('div');
-    bubbleDiv.className = 'bubble';
-    bubbleDiv.textContent = text;
+    function showTypingIndicator() {
+      const typing = document.createElement('div');
+      typing.className = 'bubble bot typing';
+      typing.id = 'typingIndicator';
+      typing.innerHTML = `
+        <img class="avatar" src="https://lh3.googleusercontent.com/p/AF1QipPFc_02zzkNFnmKBh5gvtZHm71Li3r7fTg6KDZG=s1360-w1360-h1020-rw" />
+        <div>Typing...</div>`;
+      chatHistory.appendChild(typing);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
 
-    messageDiv.appendChild(avatarDiv);
-    messageDiv.appendChild(bubbleDiv);
-    messages.appendChild(messageDiv);
-    messageDiv.scrollIntoView({ behavior: 'smooth' });
-  }
+    function removeTypingIndicator() {
+      const typing = document.getElementById('typingIndicator');
+      if (typing) typing.remove();
+    }
 
-  function resetChat() {
-    document.getElementById('messages').innerHTML = '';
-    document.getElementById('questionDropdown').selectedIndex = 0;
-  }
-</script>
+    function renderOptions() {
+      optionsContainer.innerHTML = '';
+      Object.keys(options).forEach(optionText => {
+        const btn = document.createElement('button');
+        btn.className = 'option-button';
+        btn.textContent = optionText;
+        btn.onclick = () => {
+          addMessage(optionText, 'user');
+          showTypingIndicator();
+          setTimeout(() => {
+            removeTypingIndicator();
+            addMessage(options[optionText], 'bot');
+          }, 1000);
+        };
+        optionsContainer.appendChild(btn);
+      });
+    }
 
+    function printChat() {
+      const printWindow = window.open('', '', 'height=600,width=800');
+      printWindow.document.write('<html><head><title>Chat History</title></head><body>');
+      printWindow.document.write(document.getElementById('chatHistory').innerHTML);
+      printWindow.document.write('</body></html>');
+      printWindow.document.close();
+      printWindow.print();
+    }
+
+    function downloadChat() {
+      const text = Array.from(document.querySelectorAll('#chatHistory .bubble'))
+        .map(bubble => bubble.textContent.trim())
+        .join('\n');
+      const blob = new Blob([text], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'chat-history.txt';
+      link.click();
+    }
+
+    function clearChat() {
+      chatHistory.innerHTML = '';
+    }
+
+    renderOptions();
+  </script>
 </body>
 </html>
